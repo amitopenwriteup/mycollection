@@ -1,0 +1,78 @@
+---
+# Simple Ansible Lookup Plugin Examples
+# Lookup plugins retrieve data from external sources
+
+- name: Lookup Plugins - Simple Examples
+  hosts: localhost
+  gather_facts: no
+  
+  tasks:
+    # ========================================
+    # 1. FILE LOOKUP - Read file contents
+    # ========================================
+    
+    - name: "Example 1: Read hostname from file"
+      debug:
+        msg: "Hostname: {{ lookup('file', '/etc/hostname') }}"
+    
+    - name: "Example 2: Read OS release info"
+      debug:
+        msg: "{{ lookup('file', '/etc/os-release') }}"
+      ignore_errors: yes
+
+    # ========================================
+    # 2. ENV LOOKUP - Get environment variables
+    # ========================================
+    
+    - name: "Example 3: Get current username"
+      debug:
+        msg: "Current user: {{ lookup('env', 'USER') }}"
+    
+    - name: "Example 4: Get home directory"
+      debug:
+        msg: "Home directory: {{ lookup('env', 'HOME') }}"
+    
+    - name: "Example 5: Get PATH variable"
+      debug:
+        msg: "PATH: {{ lookup('env', 'PATH') }}"
+    
+    - name: "Example 6: Get with default value if not exists"
+      debug:
+        msg: "My variable: {{ lookup('env', 'MY_VAR') | default('not_set') }}"
+
+    - name: "Example 9: Get disk usage"
+      debug:
+        msg: "Disk usage: {{ lookup('pipe', 'df -h /') }}"
+    
+    - name: "Example 10: Get current users"
+      debug:
+        msg: "Logged in users: {{ lookup('pipe', 'who') }}"
+
+    # ========================================
+    # 4. PASSWORD LOOKUP - Generate passwords
+    # ========================================
+    
+    - name: "Example 11: Generate random password"
+      debug:
+        msg: "Password: {{ lookup('password', '/tmp/mypassword length=10') }}"
+    
+    - name: "Example 12: Generate password with specific characters"
+      debug:
+        msg: "Password: {{ lookup('password', '/tmp/mypass2 chars=ascii_letters,digits length=12') }}"
+    
+    - name: "Example 13: Generate numeric PIN"
+      debug:
+        msg: "PIN: {{ lookup('password', '/tmp/pin chars=digits length=4') }}"
+
+    # ========================================
+    # 5. LINES LOOKUP - Get output line by line
+    # ========================================
+    
+    - name: "Example 14: List all shells"
+      debug:
+        msg: "Available shells: {{ lookup('lines', 'cat /etc/shells') }}"
+    
+    - name: "Example 15: List users from /etc/passwd"
+      debug:
+        msg: "Users: {{ lookup('lines', 'cut -d: -f1 /etc/passwd | head -5') }}"
+

@@ -1,0 +1,42 @@
+---
+- name: System Configuration Checks
+  hosts: all
+  gather_facts: yes
+  become: yes
+  
+  tasks:
+    - name: Perform system checks
+      mycompany.systemchecks.system_check:
+        check_sudo: yes
+        check_ntp: yes
+        check_dns: yes
+      register: system_check_result
+    
+    - name: Display sudo users
+      debug:
+        msg: "{{ system_check_result.sudo_users | format_sudo_list }}"
+      when: system_check_result.sudo_users is defined
+    
+    - name: Display NTP status
+      debug:
+        msg: "{{ system_check_result.ntp_status | format_ntp_status }}"
+      when: system_check_result.ntp_status is defined
+    
+    - name: Display DNS servers
+      debug:
+        msg: "{{ system_check_result.dns_servers | format_dns_list }}"
+      when: system_check_result.dns_servers is defined
+    
+    - name: Save results to file
+      copy:
+        content: |
+          System Check Results for {{ inventory_hostname }}
+          ==========================================
+          Sudo Users: {{ system_check_result.sudo_users | default([]) | join(', ') }}
+          NTP Service: {{ system_check_result.ntp_status.service | default('unknown') }}
+          NTP Active: {{ system_check_result.ntp_status.active | default(false) }}
+          NTP Synchronized: {{ system_check_result.ntp_status.synchronized | default(false) }}
+          DNS Servers: {{ system_check_result.dns_servers | default([]) | join(', ') }}
+        dest: "/tmp/system_check_{{ inventory_hostname }}.txt"
+      delegate_to: localhost
+

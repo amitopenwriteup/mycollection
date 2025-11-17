@@ -1,0 +1,17 @@
+---
+namespace: mycompany
+name: systemchecks
+version: 1.0.0
+readme: README.md
+authors:
+  - System Admin Team
+description: Collection for checking Linux system configurations
+license:
+  - GPL-3.0-or-later
+tags:
+  - system
+  - monitoring
+  - security
+dependencies: {}
+
+
