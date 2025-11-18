@@ -8,6 +8,7 @@ authors:
 description: Collection for checking Linux system configurations
 license:
   - GPL-3.0-or-later
+repository: https://github.com/amitopenwriteup/mycollection
 tags:
   - system
   - monitoring
